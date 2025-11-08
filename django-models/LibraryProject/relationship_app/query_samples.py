@@ -7,10 +7,10 @@ django.setup()
 from relationship_app.models import Author, Book, Library, Librarian
 
 def query_books_by_author(author_name):
-    """Query all books by a specific author."""
+    """Query all books by a specific author using Book.objects.filter."""
     try:
         author = Author.objects.get(name=author_name)
-        books = author.books.all()
+        books = Book.objects.filter(author=author) 
         print(f"Books by {author_name}: {[book.title for book in books]}")
     except Author.DoesNotExist:
         print(f"Author '{author_name}' does not exist.")
