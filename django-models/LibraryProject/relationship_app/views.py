@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import user_passes_test, permission_required
+from django.contrib.auth.decorators import permission_required, user_passes_test
 from django.views.generic.detail import DetailView
 from .models import Library, Book, UserProfile, Author
 from django.forms import ModelForm
