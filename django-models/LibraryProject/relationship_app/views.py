@@ -1,7 +1,15 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import permission_required, user_passes_test
+from django.shortcuts import render
+from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login as auth_login
 from django.views.generic.detail import DetailView
-from .models import Library, Book, UserProfile, Author
+from .models import Library
+from .models import Book
+from .models import UserProfile
+from .models import Author
 from django.forms import ModelForm
 
 
@@ -79,3 +87,15 @@ def delete_book(request, book_id):
         book.delete()
         return redirect('list_books')
     return render(request, 'relationship_app/book_confirm_delete.html', {'book': book})
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            auth_login(request, user)
+            return redirect('list_books')
+    else:
+        form = UserCreationForm()
+    return render(request, 'relationship_app/register.html', {'form': form})
