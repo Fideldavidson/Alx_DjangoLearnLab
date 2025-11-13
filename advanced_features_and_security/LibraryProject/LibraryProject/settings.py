@@ -141,6 +141,15 @@ X_FRAME_OPTIONS = 'DENY'
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
+# --- HTTPS Enforcement ---
+# Redirect all HTTP requests to HTTPS
+SECURE_SSL_REDIRECT = True  # Enforce HTTPS for all requests
+# HTTP Strict Transport Security (HSTS)
+SECURE_HSTS_SECONDS = 31536000  # Instruct browsers to use HTTPS for 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to all subdomains
+SECURE_HSTS_PRELOAD = True  # Allow domain to be included in browser preload lists
+# -------------------------
+
 # Content Security Policy (django-csp)
 CSP_DEFAULT_SRC = ("'self'",)
 CSP_SCRIPT_SRC = ("'self'",)
