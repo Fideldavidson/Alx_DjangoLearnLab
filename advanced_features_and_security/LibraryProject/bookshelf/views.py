@@ -42,10 +42,8 @@ def article_list(request):
 
 @login_required
 @permission_required('app_name.can_create', raise_exception=True)
-from .forms import ArticleForm
 
 def article_create(request):
-    # Use Django form for validation to prevent SQL injection and XSS
     if request.method == "POST":
         form = ArticleForm(request.POST)
         if form.is_valid():
@@ -65,7 +63,6 @@ def article_create(request):
 @permission_required('app_name.can_edit', raise_exception=True)
 def article_edit(request, article_id):
     article = get_object_or_404(Article, id=article_id)
-    # Use Django form for validation to prevent SQL injection and XSS
     if request.method == "POST":
         form = ArticleForm(request.POST, instance=article)
         if form.is_valid():
