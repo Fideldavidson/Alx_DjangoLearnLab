@@ -148,6 +148,7 @@ SECURE_SSL_REDIRECT = True  # Enforce HTTPS for all requests
 SECURE_HSTS_SECONDS = 31536000  # Instruct browsers to use HTTPS for 1 year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to all subdomains
 SECURE_HSTS_PRELOAD = True  # Allow domain to be included in browser preload lists
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # -------------------------
 
 # Content Security Policy (django-csp)
