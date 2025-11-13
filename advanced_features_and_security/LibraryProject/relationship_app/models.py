@@ -56,12 +56,14 @@ class UserProfile(models.Model):
         return f"{self.user.username} - {self.role}"
 
 
-@receiver(post_save, sender=get_user_model())
+@receiver(post_save)
 def create_user_profile(sender, instance, created, **kwargs):
-    if created:
+    UserModel = get_user_model()
+    if isinstance(instance, UserModel) and created:
         UserProfile.objects.create(user=instance)
 
-@receiver(post_save, sender=get_user_model())
+@receiver(post_save)
 def save_user_profile(sender, instance, **kwargs):
-    if hasattr(instance, 'userprofile'):
+    UserModel = get_user_model()
+    if isinstance(instance, UserModel) and hasattr(instance, 'userprofile'):
         instance.userprofile.save()
