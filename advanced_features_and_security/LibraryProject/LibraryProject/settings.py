@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-c5ldyzspp=#-n6(&9qa)r$5z)q=*i8mf_8iz=fdrx%i3c^tn#t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False  # SECURITY: Never run with DEBUG=True in production
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # Set appropriate hosts in production
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bookshelf',
     'relationship_app',
+    'csp',  # django-csp for Content Security Policy
 ]
 
 MIDDLEWARE = [
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware',  # django-csp middleware
 ]
 
 ROOT_URLCONF = 'LibraryProject.urls'
@@ -127,6 +129,23 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# --- Security Best Practices ---
+# Enable browser XSS filter
+SECURE_BROWSER_XSS_FILTER = True
+# Prevent the browser from MIME-sniffing
+SECURE_CONTENT_TYPE_NOSNIFF = True
+# Prevent clickjacking
+X_FRAME_OPTIONS = 'DENY'
+# Ensure cookies are sent over HTTPS only
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# Content Security Policy (django-csp)
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'",)
+CSP_STYLE_SRC = ("'self'",)
+# -----------------------------
 
 # Authentication settings
 AUTH_USER_MODEL = 'bookshelf.CustomUser'

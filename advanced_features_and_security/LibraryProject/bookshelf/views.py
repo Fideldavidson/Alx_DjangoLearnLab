@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import Book
 from django.http import HttpResponse
 from django.shortcuts import render
-from .forms import ExampleForm
+from .forms import ExampleForm, ArticleForm
 
 def contact_view(request):
     if request.method == 'POST':
@@ -42,24 +42,42 @@ def article_list(request):
 
 @login_required
 @permission_required('app_name.can_create', raise_exception=True)
+from .forms import ArticleForm
+
 def article_create(request):
+    # Use Django form for validation to prevent SQL injection and XSS
     if request.method == "POST":
-        title = request.POST.get("title")
-        content = request.POST.get("content")
-        article = Article.objects.create(title=title, content=content, author=request.user)
-        return render(request, 'article_detail.html', {'article': article})
-    return render(request, 'article_form.html')
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+            article = form.save(commit=False)
+            article.author = request.user
+            article.save()
+            response = render(request, 'article_detail.html', {'article': article})
+            response['Content-Security-Policy'] = "default-src 'self';"
+            return response
+    else:
+        form = ArticleForm()
+    response = render(request, 'article_form.html', {'form': form})
+    response['Content-Security-Policy'] = "default-src 'self';"
+    return response
 
 @login_required
 @permission_required('app_name.can_edit', raise_exception=True)
 def article_edit(request, article_id):
     article = get_object_or_404(Article, id=article_id)
+    # Use Django form for validation to prevent SQL injection and XSS
     if request.method == "POST":
-        article.title = request.POST.get("title")
-        article.content = request.POST.get("content")
-        article.save()
-        return render(request, 'article_detail.html', {'article': article})
-    return render(request, 'article_form.html', {'article': article})
+        form = ArticleForm(request.POST, instance=article)
+        if form.is_valid():
+            form.save()
+            response = render(request, 'article_detail.html', {'article': article})
+            response['Content-Security-Policy'] = "default-src 'self';"
+            return response
+    else:
+        form = ArticleForm(instance=article)
+    response = render(request, 'article_form.html', {'form': form, 'article': article})
+    response['Content-Security-Policy'] = "default-src 'self';"
+    return response
 
 @login_required
 @permission_required('app_name.can_delete', raise_exception=True)
