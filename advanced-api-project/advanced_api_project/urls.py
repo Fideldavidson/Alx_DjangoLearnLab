@@ -1,14 +1,16 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from api.models import Author, Book
 from api.serializers import AuthorSerializer, BookSerializer
 
+
 class AuthorListAPIView(APIView):
     def get(self, request):
         authors = Author.objects.all()
         return Response(AuthorSerializer(authors, many=True).data)
+
 
 class BookListCreateAPIView(APIView):
     def get(self, request):
@@ -21,8 +23,10 @@ class BookListCreateAPIView(APIView):
         serializer.save()
         return Response(serializer.data, status=201)
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('authors/', AuthorListAPIView.as_view(), name='authors'),
     path('books/', BookListCreateAPIView.as_view(), name='books'),
+    path('api/', include('api.urls')),
 ]
