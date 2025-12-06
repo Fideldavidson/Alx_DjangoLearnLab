@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import BlogLoginView, BlogLogoutView, register, profile, home
-from .views_posts import (
+from .views import (
+    BlogLoginView, BlogLogoutView, register, profile, home,
     PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView
 )
 
@@ -11,7 +11,6 @@ urlpatterns = [
     path("register/", register, name="register"),
     path("profile/", profile, name="profile"),
 
-    # Blog post CRUD
     path("posts/", PostListView.as_view(), name="posts"),
     path("posts/new/", PostCreateView.as_view(), name="post-create"),
     path("posts/<int:pk>/", PostDetailView.as_view(), name="post-detail"),
