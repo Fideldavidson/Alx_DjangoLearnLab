@@ -12,7 +12,7 @@ urlpatterns = [
     path("profile/", profile, name="profile"),
 
     # Blog post CRUD (renamed to match expected format)
-    path("post/", PostListView.as_view(), name="posts"),
+    path("post/", PostListView.as_view(), name="post-list"),
     path("post/new/", PostCreateView.as_view(), name="post-create"),
     path("post/<int:pk>/", PostDetailView.as_view(), name="post-detail"),
     path("post/<int:pk>/update/", PostUpdateView.as_view(), name="post-update"),
