@@ -1,11 +1,10 @@
 {% extends "blog/base.html" %}
-{% block title %}{% if view.object %}Edit post{% else %}Create post{% endif %}{% endblock %}
 {% block content %}
-<h2>{% if view.object %}Edit post{% else %}Create post{% endif %}</h2>
+<h2>{% if form.instance.pk %}Edit Post{% else %}Create New Post{% endif %}</h2>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit">{% if view.object %}Save{% else %}Create{% endif %}</button>
+  <button type="submit">Save</button>
 </form>
-<p><a href="{% url 'post-list' %}">Back to list</a></p>
+<a href="{% url 'post-list' %}">Cancel</a>
 {% endblock %}
