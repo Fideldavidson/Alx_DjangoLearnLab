@@ -14,8 +14,9 @@ from django.views.generic import (
     DeleteView
 )
 
-from .forms import CustomUserCreationForm, PostForm, CommentForm # <-- Ensure CommentForm is imported
-from .models import Post, Comment # <-- Ensure Comment model is imported
+from .forms import CustomUserCreationForm, PostForm, CommentForm
+from .models import Post, Comment
+from django.utils import timezone
 
 
 # --- Task 0/1 Views (Authentication) ---
@@ -53,41 +54,33 @@ def profile(request):
 
 # --- Task 2: CRUD Class-Based Views (Post Management) ---
 
-# 1. READ: Display list of all posts (Public)
 class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
     ordering = ['-published_date'] 
 
-# 2. READ: Display individual post details (Public)
 class PostDetailView(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
 
-    # --- UPDATED CONTEXT FOR TASK 3 ---
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Pass an empty CommentForm instance to the template
         context['comment_form'] = CommentForm() 
         return context
-    # -----------------------------------
 
-
-# 3. CREATE: Allow authenticated users to create a new post
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
     template_name = 'blog/post_form.html'
-    success_url = reverse_lazy('post-list') # Using 'post-list' from Task 2 fix
+    success_url = reverse_lazy('post-list')
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         messages.success(self.request, "Your post has been created successfully!")
         return super().form_valid(form)
 
-# 4. UPDATE: Allow post authors to edit their posts
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     form_class = PostForm
@@ -101,11 +94,10 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         messages.success(self.request, "Your post has been updated successfully!")
         return super().form_valid(form)
 
-# 5. DELETE: Allow post authors to delete their posts
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     template_name = 'blog/post_confirm_delete.html'
-    success_url = reverse_lazy('post-list') # Using 'post-list' from Task 2 fix
+    success_url = reverse_lazy('post-list')
     context_object_name = 'post'
 
     def test_func(self):
@@ -119,26 +111,31 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 # --- Task 3: Comment Views ---
 
-@login_required
-def comment_create(request, pk):
+# 1. Comment Create View (CBV Compliant)
+class CommentCreateView(LoginRequiredMixin, CreateView):
     """Handles the creation of a new comment on a specific post."""
-    post = get_object_or_404(Post, pk=pk)
+    model = Comment
+    form_class = CommentForm
     
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.author = request.user
-            comment.save()
-            messages.success(request, "Your comment has been posted successfully!")
-            return redirect('post-detail', pk=post.pk)
-    
-    return redirect('post-detail', pk=post.pk)
+    def form_valid(self, form):
+        # 1. Get the post ID from the URL (pk in our url pattern is the post's pk)
+        post_pk = self.kwargs['pk']
+        post = get_object_or_404(Post, pk=post_pk)
+        
+        # 2. Set the post and author
+        comment = form.save(commit=False)
+        comment.post = post
+        comment.author = self.request.user
+        comment.save()
+
+        messages.success(self.request, "Your comment has been posted successfully!")
+        
+        # 3. Redirect back to the post detail page
+        return redirect('post-detail', pk=post.pk)
 
 
+# 2. Comment Update View
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    """Allows comment author to edit their comment."""
     model = Comment
     form_class = CommentForm
     template_name = 'blog/comment_form.html'
@@ -153,8 +150,8 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return super().form_valid(form)
 
 
+# 3. Comment Delete View
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    """Allows comment author to delete their comment."""
     model = Comment
     template_name = 'blog/comment_confirm_delete.html'
     context_object_name = 'comment'

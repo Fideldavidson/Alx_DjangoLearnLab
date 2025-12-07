@@ -9,8 +9,9 @@ from .views import (
     PostCreateView,
     PostUpdateView,
     PostDeleteView,
-    CommentUpdateView, # Task 3
-    CommentDeleteView, # Task 3
+    CommentCreateView, # <-- New CBV
+    CommentUpdateView,
+    CommentDeleteView,
 )
 
 urlpatterns = [
@@ -29,7 +30,8 @@ urlpatterns = [
     path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
     
     # --- Task 3: Comment URLs ---
-    path('post/<int:pk>/comment/new/', views.comment_create, name='comment-create'), 
+    # Changed from views.comment_create to CommentCreateView.as_view()
+    path('post/<int:pk>/comment/new/', CommentCreateView.as_view(), name='comment-create'), 
     path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name='comment-update'),
     path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment-delete'),
 ]
