@@ -37,3 +37,11 @@ urlpatterns = [
     path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name='comment-update'),
     path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment-delete'),
 ]
+
+    # --- Task 4: Tagging and Search URLs ---
+    # URL for filtering posts by a specific tag
+    path('tag/<slug:tag_slug>/', views.PostTagListView.as_view(), name='post-by-tag'),
+    
+    # URL for processing search queries
+    path('search/', views.SearchResultsListView.as_view(), name='search-results'),
+]

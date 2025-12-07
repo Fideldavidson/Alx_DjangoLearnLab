@@ -24,7 +24,11 @@
                 {% endif %}
             </ul>
         </nav>
-    </header>
+        <form class="search-form" action="{% url 'search-results' %}" method="get">
+            <input type="search" name="q" placeholder="Search posts and tags..." value="{{ search_query }}">
+            <button type="submit">Search</button>
+        </form>
+        </header>
 
     <div class="content">
         {% if messages %}

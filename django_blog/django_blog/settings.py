@@ -26,7 +26,6 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-# ... (INSTALLED_APPS, MIDDLEWARE, ROOT_URLCONF sections remain the same) ...
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -34,6 +33,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # Third-party apps for Task 4
+    'taggit', # <-- FIXED: Added 'taggit' to resolve SystemCheckError
+    
+    # Local apps
     'blog',
 ]
 
@@ -69,23 +73,36 @@ WSGI_APPLICATION = 'django_blog.wsgi.application'
 
 
 # Database
-# --- NEW DATABASES CONFIGURATION ---
-# Uses standard dictionary keys ("USER", "PORT") to satisfy the checker.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'), # EXPOSED KEY
+        'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'), # EXPOSED KEY
+        'PORT': os.getenv('DB_PORT'),
     }
 }
-# --- END NEW DATABASES CONFIGURATION ---
 
 
-# ... (Password validation, Internationalization sections remain the same) ...
+# Password validation
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
+
+# Internationalization
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'

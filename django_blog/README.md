@@ -114,3 +114,27 @@ Objective: Implement a full CRUD (Create, Read, Update, Delete) comment system i
     * As the comment author, verify the **Edit** and **Delete** links are visible on your comment.
     * Log in as a different user. Verify that you **CANNOT** see the Edit or Delete links on the first user's comment.
 4.  **Edit/Delete Flow:** Successfully execute the edit and delete operations to ensure the comment system's full functionality.
+
+---
+
+## Task 4: Implementing Advanced Features: Tagging and Search Functionality (Completed)
+
+Objective: Enhanced content organization and discoverability using tagging and keyword search.
+
+### 📝 Implementation Details
+
+* **Tagging:** Implemented using the external package `django-taggit`.
+    * The `Post` model includes `tags = TaggableManager()`.
+    * The `PostForm` now includes the tags field, allowing users to add comma-separated tags during creation/update.
+    * **Viewing by Tag:** The `PostTagListView` filters posts based on the `tag_slug` provided in the URL.
+* **Search:** Implemented using a Class-Based View, `SearchResultsListView`.
+    * The search query is retrieved from the URL (`request.GET.get('q')`).
+    * **Query Logic:** Django's `Q` objects are used to construct a powerful query that performs an **OR** search across `title`, `content`, and associated `tags__name`.
+* **URLs:**
+    * View Posts by Tag: `/tag/<slug:tag_slug>/` (uses `post-by-tag` name)
+    * Search Results: `/search/` (uses `search-results` name)
+
+### 🧪 How to Test (Task 4)
+
+1.  **Tagging:** Create a new post and add tags (e.g., "django, tutorial, webdev"). Verify the tags appear as links on the detail page. Click a tag to ensure the `PostTagListView` correctly filters posts.
+2.  **Search:** Use the new search bar in the header. Enter a title keyword, a content keyword, and a tag name. Verify all matching posts are displayed on the search results page.

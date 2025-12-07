@@ -1,51 +1,28 @@
+from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-from django import forms 
-from .models import Post # <-- THIS IS THE MISSING IMPORT
+from .models import Post, Comment
 
+# --- Task 1: Custom Registration Form ---
 class CustomUserCreationForm(UserCreationForm):
-    """
-    Extends the default UserCreationForm to include the email field.
-    """
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'password', 'password2')
-        field_classes = {
-            'email': forms.EmailField,
-        }
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Ensure email is required
-        self.fields['email'].required = True
+    class Meta(UserCreationForm.Meta):
+        fields = UserCreationForm.Meta.fields + ('email',)
 
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if email and User.objects.filter(email=email).exclude(username=self.cleaned_data.get('username')).exists():
-            raise forms.ValidationError("This email address is already in use.")
-        return email
-
+# --- Task 2 & 4: Post Management Form ---
 class PostForm(forms.ModelForm):
-    """
-    ModelForm for creating and updating Post objects.
-    """
     class Meta:
-        model = Post # <-- Now correctly defined
-        # Exclude the author and published_date fields, 
-        # as they will be set automatically in the views.
-        fields = ['title', 'content']
+        model = Post
+        # Ensure 'tags' is included in the fields list
+        fields = ['title', 'content', 'tags'] # <-- UPDATED for Tagging
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter post title'}),
-            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 10, 'placeholder': 'Write your content here...'}),
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'content': forms.Textarea(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'tags': 'Tags (comma separated)', # Helpful label for users
         }
 
-# Note: Post model must be imported if it wasn't already (assuming it was imported in the initial Task 2 fix)
-from .models import Comment 
-
+# --- Task 3: Comment Form ---
 class CommentForm(forms.ModelForm):
-    """
-    ModelForm for creating and updating Comment objects.
-    """
     class Meta:
         model = Comment
         fields = ['content']

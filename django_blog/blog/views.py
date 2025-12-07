@@ -163,3 +163,47 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, "Your comment has been deleted successfully.")
         return super().delete(request, *args, **kwargs)
+
+from django.db.models import Q # <-- NEW IMPORT for Search
+
+# --- Task 4: Tagging and Search Views ---
+
+class PostTagListView(ListView):
+    """Displays a list of posts filtered by a specific tag."""
+    model = Post
+    template_name = 'blog/post_list.html' # Reuse the existing list template
+    context_object_name = 'posts'
+    
+    def get_queryset(self):
+        # Filter posts where the tag__slug matches the slug provided in the URL
+        return Post.objects.filter(tags__slug=self.kwargs.get('tag_slug')).order_by('-published_date')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag_slug'] = self.kwargs.get('tag_slug')
+        context['tag_name'] = self.kwargs.get('tag_slug').replace('-', ' ').title()
+        return context
+
+
+class SearchResultsListView(ListView):
+    """Displays search results based on title, content, or tags."""
+    model = Post
+    template_name = 'blog/search_results.html' # New template for results
+    context_object_name = 'results'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            # Use Q objects to perform OR search across multiple fields
+            queryset = Post.objects.filter(
+                Q(title__icontains=query) |
+                Q(content__icontains=query) |
+                Q(tags__name__icontains=query) # Search by tag name
+            ).distinct().order_by('-published_date')
+            return queryset
+        return Post.objects.none()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get('q', '')
+        return context
