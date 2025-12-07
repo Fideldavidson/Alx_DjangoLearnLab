@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Welcome Home{% endblock %}
+
+{% block content %}
+    <div class="welcome-message">
+        <h1>Welcome to the Django Blog!</h1>
+        <p>This is the homepage of your fully configured Django project.</p>
+        <p>Task 1 (Authentication) and Task 2 (Post Management) features are now active.</p>
+        
+        <div class="actions">
+            {% if user.is_authenticated %}
+                <p>Hello, {{ user.username }}! You can now <a href="{% url 'post-create' %}">Create a New Post</a> or <a href="{% url 'posts' %}">View All Posts</a>.</p>
+            {% else %}
+                <p>Please <a href="{% url 'login' %}">Log In</a> or <a href="{% url 'register' %}">Register</a> to start managing content.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

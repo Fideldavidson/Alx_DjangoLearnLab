@@ -1,5 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django import forms 
+from .models import Post # <-- THIS IS THE MISSING IMPORT
 
 class CustomUserCreationForm(UserCreationForm):
     """
@@ -17,11 +19,22 @@ class CustomUserCreationForm(UserCreationForm):
         # Ensure email is required
         self.fields['email'].required = True
 
-    # Note: Django's built-in User model already has username, email, and password.
-    # The clean_email method ensures uniqueness, which is good practice.
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if email and User.objects.filter(email=email).exclude(username=self.cleaned_data.get('username')).exists():
             raise forms.ValidationError("This email address is already in use.")
         return email
 
+class PostForm(forms.ModelForm):
+    """
+    ModelForm for creating and updating Post objects.
+    """
+    class Meta:
+        model = Post # <-- Now correctly defined
+        # Exclude the author and published_date fields, 
+        # as they will be set automatically in the views.
+        fields = ['title', 'content']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter post title'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 10, 'placeholder': 'Write your content here...'}),
+        }

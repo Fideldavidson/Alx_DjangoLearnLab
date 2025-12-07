@@ -1,24 +1,35 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Simple Django Blog</title>
-    <link rel="stylesheet" href="{% static 'blog/css/style.css' %}">
-    <script src="{% static 'blog/js/script.js' %}" defer></script>
-</head>
-<body>
-    <header>
-        <h1>Welcome to the Django Blog!</h1>
-    </header>
-    <main>
-        <h2>Initial Setup Successful</h2>
-        <p>This page is served from the <code>blog/templates/blog/post_list.html</code> template.</p>
-        <p>The static files are also linked correctly.</p>
-        </main>
-    <footer>
-        <p>&copy; 2025 Django Blog Project</p>
-    </footer>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}All Blog Posts{% endblock %}
+
+{% block content %}
+    <h1>Blog Posts</h1>
+    <div class="post-controls">
+        {% if user.is_authenticated %}
+            <p><a href="{% url 'post-create' %}" class="btn btn-primary">Create New Post</a></p>
+        {% else %}
+            <p>Please <a href="{% url 'login' %}">log in</a> to create a new post.</p>
+        {% endif %}
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    {% for post in posts %}
+        <article class="post-entry">
+            <h2><a href="{% url 'post-detail' pk=post.pk %}">{{ post.title }}</a></h2>
+            <p class="post-meta">
+                By {{ post.author.username }} on {{ post.published_date|date:"F d, Y" }}
+            </p>
+            <div class="post-content-snippet">
+                {{ post.content|truncatewords:30 }}
+            </div>
+            <p><a href="{% url 'post-detail' pk=post.pk %}">Read More &raquo;</a></p>
+        </article>
+        <hr>
+    {% empty %}
+        <p>No blog posts have been created yet. Be the first!</p>
+    {% endfor %}
+{% endblock %}

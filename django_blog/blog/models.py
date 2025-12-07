@@ -19,6 +19,10 @@ class Post(models.Model):
     # all their related posts are also deleted.
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('post-detail', kwargs={'pk': self.pk})
+
     def __str__(self):
         """String representation of the Post object for the admin site."""
         return self.title
