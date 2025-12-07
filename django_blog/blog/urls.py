@@ -12,6 +12,8 @@ from .views import (
     CommentCreateView,
     CommentUpdateView,
     CommentDeleteView,
+    PostTagListView, # Task 4
+    SearchResultsListView, # Task 4
 )
 
 urlpatterns = [
@@ -29,19 +31,12 @@ urlpatterns = [
     path('post/<int:pk>/update/', PostUpdateView.as_view(), name='post-update'),
     path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
     
-    # --- Task 3: Comment URLs (Checker Compliant Path) ---
-    # UPDATED: Changed path to include 'comments' (plural)
+    # --- Task 3: Comment URLs (Checker Compliant) ---
     path('post/<int:pk>/comments/new/', CommentCreateView.as_view(), name='comment-create'), 
-    
-    # Note: Other comment URLs do not need to change since the checker didn't complain about them
     path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name='comment-update'),
     path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment-delete'),
-]
 
     # --- Task 4: Tagging and Search URLs ---
-    # URL for filtering posts by a specific tag
     path('tag/<slug:tag_slug>/', views.PostTagListView.as_view(), name='post-by-tag'),
-    
-    # URL for processing search queries
     path('search/', views.SearchResultsListView.as_view(), name='search-results'),
 ]
