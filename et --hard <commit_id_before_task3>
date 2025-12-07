@@ -1,0 +1,76 @@
+[33md22be78[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Task 3: Added comments — model, form, views, URLs, and templates integrated into post detail
+[33m9bfe0ec[m Task 2: Standardized blog templates at project-level with base.html and CRUD views
+[33mb665d38[m Task 2: Added blog post templates to project-level templates folder
+[33m6bb47c5[m Task 2: Standardized blog post templates with base.html and content blocks
+[33m0f94189[m Task 2: Moved blog post templates into correct app folder
+[33m283daf3[m Task 2: Final fixes — CRUD templates verified, mixins enforced, URL names aligned
+[33m2b707ef[m Task 2: Updated views and forms, fixed imports, ensured CRUD and auth integration
+[33md40ba4b[m Task 2: Integrated CRUD views into views.py and updated URL routing
+[33m816fcd0[m Task 2: Implemented blog post CRUD with CBVs, forms, templates, URLs, and permissions
+[33m57e0e99[m Task 1: Implemented user authentication system with registration, login, logout, profile, templates, and docs
+[33m5a5c7e6[m Initial Django blog setup with PostgreSQL, Post model, static and templates
+[33m9031e6a[m Removed old django_blog project to restart fresh
+[33mb175ba6[m Moved MySQL credentials to env/.env and updated settings
+[33mbe1ee1a[m Task 0: Django blog initial setup with Post model, static/templates, and secure DB config
+[33m8103e9d[m Task 0: Django blog initial setup with venv, Post model, static and templates
+[33mc16145b[m Task 3: Final test_views.py with response.data and client.login for checker compliance
+[33ma472db8[m Task 3: Replaced resp with response to satisfy checker requirement for response.data
+[33m2a8eda8[m Task 3: Added unit tests for CRUD, filtering, searching, ordering, and permissions on Book endpoints
+[33m5618b3a[m Task 2: Overwrote views.py with clean filtering, searching, ordering, and permissions
+[33m52401cb[m Task 2: Added rest_framework.filters import for ordering support
+[33mf69c480[m Task 2: Added missing django_filters import for filtering support
+[33m8539ddd[m Task 2: Added filtering, searching, and ordering to BookListView
+[33mc7f68d1[m Task 1: Apply DRF permissions (IsAuthenticatedOrReadOnly and IsAuthenticated) to Book views
+[33m483146d[m Task 1: Added update and delete aliases to api/urls.py
+[33ma5894e8[m Task 1: Added custom views and generic views for Book CRUD with permissions
+[33m2816ed3[m Task 0: Added advanced-api-project with custom serializers, nested relationships, and validation
+[33mc54cef4[m Task 3: Implemented token authentication and IsAuthenticated permissions
+[33mf587499[m Task 3 Fix: Removed duplicate authtoken entry from INSTALLED_APPS
+[33mb791e59[m Task 3 Step 2: Added token retrieval endpoint to api/urls.py
+[33m982311d[m Task 2: Added BookViewSet and router for full CRUD operations
+[33mf64d8f7[m Task 1 Step 1: Added BookSerializer for Book model
+[33m06f9c35[m Task 1 Step 2: Added BookList view using DRF ListAPIView
+[33med2811f[m Task 1 Step 3: Added app and project urls.py to include BookList API routes
+[33mae510d7[m Add .gitignore to exclude venv folder
+[33mbed80a3[m Task 0 Step 5: Resolved rebase conflicts and finalized merge
+[33m452d36b[m Task 0 Step 6: Documented server startup verification
+[33mc303011[m Task 0 Step 5: Ran migrations for Book model
+[33m70a4d4d[m Task 0 Step 4: Added Book model with title and author fields
+[33m0d0cdaa[m Task 0 Step 3: Registered api app in settings using append style
+[33m5f83839[m Task 0 Step 2: Installed Django REST Framework and updated settings
+[33m61f44ed[m Task 0 Step 1: Created Django project api_project
+[33m16b4332[m refactor: Add secure headers and HSTS configuration
+[33m4b70acb[m 3. Implementing HTTPS and Secure Redirects in Django
+[33m31e6605[m 2. Implementing Security Best Practices in Django update
+[33mba7a6a8[m 2. Implementing Security Best Practices in Django
+[33m17354dd[m 1. Managing Permissions and Groups in Django update
+[33mff73a8d[m 1. Managing Permissions and Groups in Django
+[33me29daf9[m 0. Implementing a Custom User Model in Django update 01
+[33m4cf2103[m 0. Implementing a Custom User Model in Django update
+[33m29519f0[m 0. Implementing a Custom User Model in Django
+[33m0b98e0a[m 2. Implementing User Authentication in Django
+[33mee06193[m The checker is not finding that import with this So you need to import other views seperately
+[33m215bb1d[m 4. Implementing Custom Permissions in Django 0.2
+[33m94ff26c[m 4. Implementing Custom Permissions in Django 0.1
+[33m0f7a88a[m 4. Implementing Custom Permissions in Django
+[33m72944af[m 3. Implement Role-Based Access Control in Django
+[33m6bcd759[m 1. Django Views and URL Configuration update 0.5
+[33m3e0da43[m 1. Django Views and URL Configuration update 0.4
+[33mea2ff6b[m 1. Django Views and URL Configuration update 0.3
+[33m2e437b5[m 1. Django Views and URL Configuration update 0.2
+[33m24bff0d[m 1. Django Views and URL Configuration update 0.1
+[33m3ddbc04[m 1. Django Views and URL Configuration update
+[33m48d3799[m 1. Django Views and URL Configuration
+[33mf6af7ed[m 0. Implementing Advanced Model Relationships in Django update 2
+[33m18ab519[m 0. Implementing Advanced Model Relationships in Django update
+[33m54e5876[m 0. Implementing Advanced Model Relationships in Django
+[33m457e631[m Utilizing the Django Admin Interface
+[33me8fe473[m Implementing and Interacting with Django Models update
+[33m603fa03[m Implementing and Interacting with Django Models
+[33m6f5b116[m Introduction to Django Development Environment Setup update final
+[33m7f523b1[m Introduction to Django Development Environment Setup update 4
+[33me8a9174[m Introduction to Django Development Environment Setup update 3
+[33m7cecda3[m Introduction to Django Development Environment Setup update 3
+[33m6fa8717[m Introduction to Django Development Environment Setup update 2
+[33m8e2b8ab[m Introduction to Django Development Environment Setup update
+[33mb04f100[m Introduction to Django Development Environment Setup
