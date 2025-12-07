@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Logout{% endblock %}
+
+{% block content %}
+    <div class="auth-container">
+        <h1>Logged Out</h1>
+        <p>You have been successfully logged out of the Django Blog.</p>
+        <p><a href="{% url 'login' %}">Log In Again</a></p>
+    </div>
+{% endblock %}

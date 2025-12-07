@@ -103,3 +103,7 @@ STATICFILES_DIRS = [
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# --- Authentication Settings (Task 1) ---
+LOGIN_REDIRECT_URL = '/' # Redirect users to the home page after login
+LOGOUT_REDIRECT_URL = '/' # Redirect users to the home page after logout
