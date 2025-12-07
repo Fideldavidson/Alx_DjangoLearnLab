@@ -5,7 +5,7 @@
     <h1>Blog Posts</h1>
     <div class="post-controls">
         {% if user.is_authenticated %}
-            <p><a href="{% url 'post-create' %}" class="btn btn-primary">Create New Post</a></p>
+            <p><a href="{% url 'post-new' %}" class="btn btn-primary">Create New Post</a></p>
         {% else %}
             <p>Please <a href="{% url 'login' %}">log in</a> to create a new post.</p>
         {% endif %}

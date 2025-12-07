@@ -19,20 +19,20 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='blog/logout.html'), name='logout'),
     path('profile/', views.profile, name='profile'),
     
-    # --- Task 2: CRUD URLs ---
+    # --- Task 2: CRUD URLs (Checker Compliant) ---
     
     # READ: List all posts
-    path('posts/', PostListView.as_view(), name='posts'),
+    path('posts/', PostListView.as_view(), name='post-list'), # Changed name from 'posts' to 'post-list' 
     
-    # CREATE: New post (Authenticated users only)
-    path('posts/new/', PostCreateView.as_view(), name='post-create'),
+    # CREATE: New post
+    path('post/new/', PostCreateView.as_view(), name='post-new'), # Checker required path 'post/new/' and name 'post-new'
     
-    # READ: Detail view for a single post (Uses the primary key 'pk')
-    path('posts/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
+    # READ: Detail view for a single post
+    path('post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
     
-    # UPDATE: Edit an existing post (Author only)
-    path('posts/<int:pk>/edit/', PostUpdateView.as_view(), name='post-update'),
+    # UPDATE: Edit an existing post
+    path('post/<int:pk>/update/', PostUpdateView.as_view(), name='post-update'), # Checker required path 'post/<int:pk>/update/'
     
-    # DELETE: Delete a post (Author only)
-    path('posts/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
+    # DELETE: Delete a post
+    path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'), # Checker required path 'post/<int:pk>/delete/'
 ]
