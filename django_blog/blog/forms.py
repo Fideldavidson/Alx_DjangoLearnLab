@@ -38,3 +38,17 @@ class PostForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter post title'}),
             'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 10, 'placeholder': 'Write your content here...'}),
         }
+
+# Note: Post model must be imported if it wasn't already (assuming it was imported in the initial Task 2 fix)
+from .models import Comment 
+
+class CommentForm(forms.ModelForm):
+    """
+    ModelForm for creating and updating Comment objects.
+    """
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Write your comment here...'}),
+        }

@@ -2,13 +2,15 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
 
-# Import the Class-Based Views
+# Import the Class-Based Views for Posts and Comments
 from .views import (
     PostListView,
     PostDetailView,
     PostCreateView,
     PostUpdateView,
     PostDeleteView,
+    CommentUpdateView, # Task 3
+    CommentDeleteView, # Task 3
 )
 
 urlpatterns = [
@@ -20,19 +22,14 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     
     # --- Task 2: CRUD URLs (Checker Compliant) ---
-    
-    # READ: List all posts
-    path('posts/', PostListView.as_view(), name='post-list'), # Changed name from 'posts' to 'post-list' 
-    
-    # CREATE: New post
-    path('post/new/', PostCreateView.as_view(), name='post-new'), # Checker required path 'post/new/' and name 'post-new'
-    
-    # READ: Detail view for a single post
+    path('posts/', PostListView.as_view(), name='post-list'), 
+    path('post/new/', PostCreateView.as_view(), name='post-new'), 
     path('post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
+    path('post/<int:pk>/update/', PostUpdateView.as_view(), name='post-update'),
+    path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
     
-    # UPDATE: Edit an existing post
-    path('post/<int:pk>/update/', PostUpdateView.as_view(), name='post-update'), # Checker required path 'post/<int:pk>/update/'
-    
-    # DELETE: Delete a post
-    path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'), # Checker required path 'post/<int:pk>/delete/'
+    # --- Task 3: Comment URLs ---
+    path('post/<int:pk>/comment/new/', views.comment_create, name='comment-create'), 
+    path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name='comment-update'),
+    path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment-delete'),
 ]

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}{{ post.title }}{% endblock %}
 
 {% block content %}
@@ -20,4 +21,44 @@
         </div>
     </article>
     <p><a href="{% url 'post-list' %}">&larr; Back to All Posts</a></p>
-{% endblock %}
+    
+    <hr>
+    
+    <section class="comments-section">
+        <h2>Comments ({{ post.comments.count }})</h2>
+
+        {% if user.is_authenticated %}
+            <div class="comment-form-container">
+                <h3>Leave a Comment</h3>
+                <form method="POST" action="{% url 'comment-create' pk=post.pk %}" class="comment-form">
+                    {% csrf_token %}
+                    {{ comment_form.as_p }}
+                    <button type="submit" class="btn btn-primary">Post Comment</button>
+                </form>
+            </div>
+        {% else %}
+            <p>Please <a href="{% url 'login' %}">log in</a> to leave a comment.</p>
+        {% endif %}
+
+        <div class="existing-comments">
+            {% for comment in post.comments.all %}
+                <div class="comment-box">
+                    <p class="comment-author">
+                        <strong>{{ comment.author.username }}</strong> 
+                        <span class="comment-date">on {{ comment.created_at|date:"M d, Y H:i" }}</span>
+                    </p>
+                    <p class="comment-content">{{ comment.content|linebreaksbr }}</p>
+
+                    {% if user.is_authenticated and user.id == comment.author.id %}
+                        <div class="comment-actions">
+                            <a href="{% url 'comment-update' pk=comment.pk %}" class="btn btn-edit btn-small">Edit</a>
+                            <a href="{% url 'comment-delete' pk=comment.pk %}" class="btn btn-delete btn-small">Delete</a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p>No comments yet. Be the first to start the discussion!</p>
+            {% endfor %}
+        </div>
+    </section>
+    {% endblock %}

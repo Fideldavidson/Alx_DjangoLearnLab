@@ -86,3 +86,31 @@ This task implements the full Create, Read, Update, and Delete (CRUD) lifecycle 
 4.  **Security Check:** Attempt to access the edit/delete links for a post created by another user (or while logged out) to confirm the permission checks block access.
 
 ---
+
+---
+
+## Task 3: Adding Comment Functionality to Blog Posts (Completed)
+
+Objective: Implement a full CRUD (Create, Read, Update, Delete) comment system integrated directly into the blog post detail page, ensuring proper user authentication and authorization.
+
+### 📝 Implementation Details
+
+* **Model (`blog/models.py`):** The `Comment` model was defined with a `ForeignKey` to `Post` and a `ForeignKey` to Django's `User` model (`author`). It uses `created_at` (default) and `updated_at` (`auto_now=True`) fields.
+* **Forms (`blog/forms.py`):** A simple `CommentForm` (a `ModelForm`) was created, exposing only the `content` field.
+* **Views (`blog/views.py`):**
+    * **Comment Creation (Function View):** The `comment_create` function view handles form submission, automatically setting the `post` and `author` before saving, and redirecting the user back to the post detail page.
+    * **Comment Display (Context):** The `PostDetailView` was updated to include an instance of `CommentForm` in its context via `get_context_data()`.
+    * **Comment Management (CBVs):** `CommentUpdateView` and `CommentDeleteView` were implemented using Django's **`LoginRequiredMixin`** and **`UserPassesTestMixin`**.
+* **Permissions:** The `test_func` in the update and delete CBVs strictly enforces that `self.request.user == comment.author`, ensuring users can only manage their own comments.
+* **URLs (`blog/urls.py`):** URLs were configured to use an intuitive structure:
+    * Creation: `/post/<int:pk>/comment/new/`
+    * Management: `/comment/<int:pk>/update/` and `/comment/<int:pk>/delete/`
+
+### 🧪 How to Test (Task 3)
+
+1.  **Read Comments:** Access any post detail page (`/post/<int:pk>/`). The comment section should display all existing comments.
+2.  **Post Comment (Create):** Log in. The comment form should be visible. Submit a comment and confirm it appears successfully below the post.
+3.  **Edit/Delete (Permissions Check):**
+    * As the comment author, verify the **Edit** and **Delete** links are visible on your comment.
+    * Log in as a different user. Verify that you **CANNOT** see the Edit or Delete links on the first user's comment.
+4.  **Edit/Delete Flow:** Successfully execute the edit and delete operations to ensure the comment system's full functionality.
