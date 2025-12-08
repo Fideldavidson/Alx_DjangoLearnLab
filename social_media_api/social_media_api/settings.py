@@ -30,11 +30,12 @@ INSTALLED_APPS = [
     # 3rd Party
     'rest_framework',
     'rest_framework.authtoken',
-    'django_filters', # Required for filtering (Task 1, Step 5)
+    'django_filters', 
     
     # Local Apps
     'accounts',
-    'posts', # Added for Task 1
+    'posts', 
+    'notifications', # <-- Newly added for Task 3
 ]
 
 MIDDLEWARE = [
@@ -117,14 +118,12 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 # --- REST FRAMEWORK Configuration (Task 1: Pagination, Filtering, Auth) ---
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10, # Sets the default number of items per page
+    'PAGE_SIZE': 10, 
     
-    # Configures the API to use Token Authentication by default
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
     
-    # Registers the filter backend needed for search and filtering in PostViewSet
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),

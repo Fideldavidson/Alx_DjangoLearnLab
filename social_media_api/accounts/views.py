@@ -7,6 +7,7 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from .serializers import CustomUserRegistrationSerializer, CustomUserSerializer
 from .models import CustomUser
+from notifications.models import Notification # New: Import Notification model
 
 # --- User Registration and Login Views (Task 0) ---
 
@@ -48,24 +49,29 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user
 
-# --- Follow Management Views (Task 2) ---
-# Inheriting from generics.GenericAPIView to meet compliance requirements.
+# --- Follow Management Views (Task 2 & 3: Notification Added) ---
 
-class FollowUserView(generics.GenericAPIView): # Changed inheritance here
+class FollowUserView(generics.GenericAPIView):
     """Allows an authenticated user to follow another user."""
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, user_id, format=None):
-        # The user being followed
         user_to_follow = get_object_or_404(CustomUser, pk=user_id)
         current_user = request.user 
         
-        # Prevent self-following
         if user_to_follow == current_user:
             return Response({"detail": "Cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
         
-        # Add the relationship: current_user follows user_to_follow
+        # Add the relationship
         current_user.following.add(user_to_follow)
+        
+        # Notification Generation (Step 3)
+        Notification.objects.create(
+            recipient=user_to_follow, 
+            actor=current_user, 
+            verb='started following', 
+            target=user_to_follow # Target is the User who was followed
+        )
         
         return Response(
             {"detail": f"Now following {user_to_follow.username}"}, 
@@ -73,17 +79,23 @@ class FollowUserView(generics.GenericAPIView): # Changed inheritance here
         )
 
 
-class UnfollowUserView(generics.GenericAPIView): # Changed inheritance here
+class UnfollowUserView(generics.GenericAPIView):
     """Allows an authenticated user to unfollow another user."""
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, user_id, format=None):
-        # The user being unfollowed
         user_to_unfollow = get_object_or_404(CustomUser, pk=user_id)
         current_user = request.user
         
         # Remove the relationship
         current_user.following.remove(user_to_unfollow)
+        
+        # Optional: Delete Notification on unfollow
+        Notification.objects.filter(
+            actor=current_user, 
+            recipient=user_to_unfollow, 
+            verb='started following'
+        ).delete()
         
         return Response(
             {"detail": f"Unfollowed {user_to_unfollow.username}"}, 
