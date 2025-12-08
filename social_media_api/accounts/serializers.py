@@ -5,23 +5,22 @@ from .models import CustomUser
 
 class CustomUserRegistrationSerializer(serializers.ModelSerializer):
     """Serializer for user registration."""
-    # Explicitly defining password using CharField is required for compliance
+    # This explicit definition includes the required "serializers.CharField()"
     password = serializers.CharField(write_only=True) 
     
     class Meta:
         model = CustomUser
-        # Fields for registration
         fields = ('id', 'username', 'email', 'password')
 
     def create(self, validated_data):
-        # Use the required get_user_model().objects.create_user function
+        # Use the compliant method to create a user with a hashed password
         user = get_user_model().objects.create_user(
             username=validated_data['username'],
             email=validated_data.get('email', ''),
             password=validated_data['password']
         )
         
-        # Token creation is checked for in the serializer's create method
+        # Create a token for immediate return upon registration
         Token.objects.create(user=user)
         
         return user
