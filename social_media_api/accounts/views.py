@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from .serializers import CustomUserRegistrationSerializer, CustomUserSerializer
 from .models import CustomUser
 
-# --- User Registration and Login Views (Retained from Task 0) ---
+# --- User Registration and Login Views (Task 0) ---
 
 class UserRegistrationView(generics.CreateAPIView):
     """Handles user registration and returns a token."""
@@ -48,24 +48,23 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user
 
-# --- New Follow Management Views (Task 2) ---
+# --- Follow Management Views (Task 2) ---
+# Inheriting from generics.GenericAPIView to meet compliance requirements.
 
-class FollowUserView(APIView):
+class FollowUserView(generics.GenericAPIView): # Changed inheritance here
     """Allows an authenticated user to follow another user."""
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, user_id, format=None):
         # The user being followed
         user_to_follow = get_object_or_404(CustomUser, pk=user_id)
-        # The user performing the action
         current_user = request.user 
         
-        # Check if they are trying to follow themselves
+        # Prevent self-following
         if user_to_follow == current_user:
             return Response({"detail": "Cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
         
         # Add the relationship: current_user follows user_to_follow
-        # We use current_user.following because related_name='following' is set on the M2M field
         current_user.following.add(user_to_follow)
         
         return Response(
@@ -74,7 +73,7 @@ class FollowUserView(APIView):
         )
 
 
-class UnfollowUserView(APIView):
+class UnfollowUserView(generics.GenericAPIView): # Changed inheritance here
     """Allows an authenticated user to unfollow another user."""
     permission_classes = [permissions.IsAuthenticated]
 
