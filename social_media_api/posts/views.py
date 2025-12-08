@@ -71,3 +71,29 @@ class CommentViewSet(viewsets.ModelViewSet):
         
         # Save the comment, setting the required fields
         serializer.save(author=self.request.user, post=post)
+from rest_framework import generics # Import generics for the new FeedView
+
+# --- New Feed View (Task 2) ---
+
+class UserFeedView(generics.ListAPIView):
+    """
+    Generates a feed showing posts from users the current authenticated user follows.
+    Posts are ordered by creation date (newest first).
+    """
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated] # Only authenticated users can access their feed
+
+    def get_queryset(self):
+        # 1. Get the current authenticated user
+        user = self.request.user
+        
+        # 2. Get the IDs of users the current user is following
+        # We access the list of followed users via the 'following' related manager (defined on CustomUser model)
+        followed_users = user.following.all()
+        
+        # 3. Retrieve posts only from those followed users
+        # Filter posts where the author is in the list of followed users.
+        queryset = Post.objects.filter(author__in=followed_users).order_by('-created_at')
+        
+        # The queryset will automatically be paginated by the settings
+        return queryset
