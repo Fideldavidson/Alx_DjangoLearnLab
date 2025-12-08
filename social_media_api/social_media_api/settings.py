@@ -30,9 +30,11 @@ INSTALLED_APPS = [
     # 3rd Party
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters', # Required for filtering (Task 1, Step 5)
     
     # Local Apps
     'accounts',
+    'posts', # Added for Task 1
 ]
 
 MIDDLEWARE = [
@@ -67,7 +69,6 @@ WSGI_APPLICATION = 'social_media_api.wsgi.application'
 
 
 # Database
-# Using SQLite for initial setup, as per standard project initialization
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -111,3 +112,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # --- Custom User Model Configuration ---
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+
+# --- REST FRAMEWORK Configuration (Task 1: Pagination, Filtering, Auth) ---
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10, # Sets the default number of items per page
+    
+    # Configures the API to use Token Authentication by default
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    
+    # Registers the filter backend needed for search and filtering in PostViewSet
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+}
