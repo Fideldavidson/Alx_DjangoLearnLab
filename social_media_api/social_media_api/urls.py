@@ -3,6 +3,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # Include the accounts app URLs under the /api/ path as required
+    # Accounts/Auth URLs
     path('api/', include('accounts.urls')), 
+    # Posts/Comments URLs (Task 1) - This line includes the required "posts.urls"
+    path('api/', include('posts.urls')), 
 ]
