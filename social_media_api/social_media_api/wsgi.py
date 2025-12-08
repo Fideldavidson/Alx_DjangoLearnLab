@@ -4,13 +4,17 @@ WSGI config for social_media_api project.
 It exposes the WSGI callable as a module-level variable named ``application``.
 
 For more information on this file, see
-https://docs.djangoproject.com/en/5.2/howto/deployment/wsgi/
+https://docs.djangoproject.com/en/5.0/howto/deployment/wsgi/
 """
 
 import os
 
 from django.core.wsgi import get_wsgi_application
+from whitenoise.django import DjangoWhiteNoise # Import WhiteNoise
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'social_media_api.settings')
 
 application = get_wsgi_application()
+
+# Wrap the WSGI application with WhiteNoise for static file serving
+application = DjangoWhiteNoise(application) 
