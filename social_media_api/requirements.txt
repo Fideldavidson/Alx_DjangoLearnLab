@@ -1,0 +1,17 @@
+asgiref==3.11.0
+dj-database-url==3.0.1
+Django==5.2.8
+django-filter==25.2
+django-heroku==0.3.1
+django-taggit==6.1.0
+django-taggit-forms==0.1.1
+djangorestframework==3.16.1
+gunicorn==23.0.0
+packaging==25.0
+pillow==12.0.0
+psycopg2==2.9.11
+psycopg2-binary==2.9.11
+python-decouple==3.8
+python-dotenv==1.2.1
+sqlparse==0.5.3
+whitenoise==6.11.0
