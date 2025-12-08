@@ -9,7 +9,7 @@ class Post(models.Model):
         related_name='posts' # Access Posts via user.posts.all()
     )
     
-    # Text content of the post.
+    # Text content of the post. Uses models.TextField() for compliance and large text.
     content = models.TextField(
         max_length=5000,
         blank=False,
@@ -56,7 +56,7 @@ class Comment(models.Model):
         related_name='comments' # Access Comments via user.comments.all()
     )
     
-    # Text content of the comment.
+    # Text content of the comment. Uses models.TextField() for compliance.
     content = models.TextField(
         max_length=500,
         blank=False,
@@ -72,7 +72,7 @@ class Comment(models.Model):
     )
 
     class Meta:
-        # Default ordering for comments: oldest first (standard comment thread ordering).
+        # Default ordering for comments: oldest first.
         ordering = ['created_at']
 
     def __str__(self):
