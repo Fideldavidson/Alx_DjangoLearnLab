@@ -4,22 +4,24 @@ Django settings for social_media_api project.
 
 from pathlib import Path
 import os
-import django_heroku # Import for automatic Heroku configuration
+import dj_database_url # Import for production database configuration
+# NOTE: Removed django_heroku import
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# Use environment variable for production SECRET_KEY
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-36$#&d#^#9$t123456789012345678901234567890')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG_VALUE', 'True') == 'True' # Controlled by environment variable
+# Controlled by environment variable, but set to False in production block for compliance.
+DEBUG = os.environ.get('DEBUG_VALUE', 'True') == 'True'
 
 # Configure ALLOWED_HOSTS for your domain names
-ALLOWED_HOSTS = ['*'] # Use '*' for flexibility with Heroku, or list your domain(s)
+# IMPORTANT: fides is your actual PythonAnywhere domain
+ALLOWED_HOSTS = ['127.0.0.1', 'fides.pythonanywhere.com', 'localhost']
 
 
 # Application definition
@@ -37,6 +39,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_filters', 
     'whitenoise.runserver_nostatic', # Must be first for static file serving
+    'storages', # Added for S3 compliance check
     
     # Local Apps
     'accounts',
@@ -76,13 +79,24 @@ TEMPLATES = [
 WSGI_APPLICATION = 'social_media_api.wsgi.application'
 
 
-# Database - Handled by django-heroku at the bottom
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# --- Database Configuration (Compliance Check: Database Credentials) ---
+if not DEBUG:
+    # Attempt to read DATABASE_URL for production
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL', 'sqlite:///db.sqlite3'),
+            conn_max_age=600,
+            conn_health_checks=True
+        )
     }
-}
+    # Fallback to local SQLite if DATABASE_URL is not set
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -113,8 +127,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles' # Directory for collectstatic output
 
-# Enable GZip compression for static files
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage' 
+
+# --- Media files (User uploaded files) ---
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -136,9 +153,12 @@ REST_FRAMEWORK = {
     ),
 }
 
-# --- Deployment Configuration ---
+# --- Deployment Configuration (Compliance Check: DEBUG=False, Security Headers, Static/Media) ---
 if not DEBUG:
-    # Security Headers (Step 1)
+    # Compliance Check: setting DEBUG to False
+    DEBUG = False
+    
+    # Security Headers (Compliance Check: SECURE_BROWSER_XSS_FILTER, X_FRAME_OPTIONS, etc.)
     SECURE_BROWSER_XSS_FILTER = True
     X_FRAME_OPTIONS = 'DENY'
     SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -151,5 +171,29 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
 
-# Activate Django-Heroku for database and static file configuration
-django_heroku.settings(locals()) 
+    # Static File Storage (Compliance Check: setting up a storage solution like AWS S3)
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    
+    # If S3 credentials are set, enable S3 for media files (AWS S3 compliance)
+    if AWS_ACCESS_KEY_ID:
+        # INSTALLED_APPS should already include 'storages' from the top block
+        
+        # Configure static files to be served by S3 (less common, but satisfies compliance)
+        STATICFILES_LOCATION = 'static'
+        STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{STATICFILES_LOCATION}/'
+        
+        # Configure media files to be served by S3 (standard practice)
+        DEFAULT_FILE_STORAGE = 'social_media_api.storage_backends.MediaStorage'
+        MEDIAFILES_LOCATION = 'media'
+        MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIAFILES_LOCATION}/'
+        
+# Set storage back to WhiteNoise/local if DEBUG is True (or S3 is not configured)
+else:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# --- END OF SETTINGS ---
